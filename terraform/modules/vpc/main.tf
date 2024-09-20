@@ -1,13 +1,13 @@
 locals {
-  vpc_cidr        = var.vpc_cidr
-  tags            = var.tags
-  name            = var.name
-  public_subnets  = var.public_subnets
-  private_subnets = var.private_subnets
-  azs             = var.azs
+  vpc_cidr                    = var.vpc_cidr
+  tags                        = var.tags
+  name                        = var.name
+  public_subnets_cidr_blocks  = var.public_subnets_cidr_blocks
+  private_subnets_cidr_blocks = var.private_subnets_cidr_blocks
+  azs                         = var.azs
 }
 
-resource "aws_vpc" "this" {
+resource "aws_vpc" "vpc" {
   cidr_block           = local.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -15,29 +15,29 @@ resource "aws_vpc" "this" {
 }
 
 resource "aws_subnet" "public" {
-  count                   = length(local.public_subnets)
-  vpc_id                  = aws_vpc.this.id
-  cidr_block              = local.public_subnets[count.index]
+  count                   = length(local.public_subnets_cidr_blocks)
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = local.public_subnets_cidr_blocks[count.index]
   availability_zone       = local.azs[count.index]
   map_public_ip_on_launch = true
   tags                    = merge(local.tags, { Name = "${local.name}-public-${count.index}" })
 }
 
 resource "aws_subnet" "private" {
-  count             = length(local.private_subnets)
-  vpc_id            = aws_vpc.this.id
-  cidr_block        = local.private_subnets[count.index]
+  count             = length(local.private_subnets_cidr_blocks)
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = local.private_subnets_cidr_blocks[count.index]
   availability_zone = local.azs[count.index]
   tags              = merge(local.tags, { Name = "${local.name}-private-${count.index}" })
 }
 
 resource "aws_internet_gateway" "this" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.vpc.id
   tags   = merge(local.tags, { Name = "${local.name}-igw" })
 }
 
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.vpc.id
   tags   = merge(local.tags, { Name = "${local.name}-public-rt" })
 }
 

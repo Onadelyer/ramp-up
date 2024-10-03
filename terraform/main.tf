@@ -45,3 +45,40 @@ module "security_groups" {
     },
   ]
 }
+
+module "ec2" {
+  source = "./modules/ec2"
+
+  ami           = "ami-0ebfd941bbafe70c6"
+  sg_id         = module.security_groups.sg_id
+  subnet_id     = module.vpc.public_subnet_ids[0]
+  instance_type = "t2.micro"
+  ssh_key_name  = "ramp-up"
+
+  tags = {
+    Name = "swg-sample-ec2"
+  }
+}
+
+module "lambda" {
+  source = "./modules/lambda"
+
+  function_name              = "increment_sample_value"
+  handler                    = "main.handler"
+  runtime                    = "python3.8"
+  lambda_role_arn            = "arn:aws:iam::905418362898:role/Lambda-dynamodb"
+  invoking_service_name      = "APIGateway"
+  invoking_service_principal = "apigateway.amazonaws.com"
+  code_bucket_name           = "lambda-deployment-bucket455"
+  code_object_key            = "lambda.zip"
+  package_path               = "./lambda_source"
+}
+
+module "api_gateway" {
+  source = "./modules/api_gateway"
+
+  name         = "sample-api-gateway"
+  lambda_arn   = module.lambda.lambda_invoke_arn
+  lambda_alias = module.lambda.lambda_alias_name
+  lambda_name  = module.lambda.lambda_function_name
+}

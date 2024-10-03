@@ -1,39 +1,29 @@
 variable "ami" {
-  type = string
+  description = "The ID of the AMI to use for the instance."
+  type        = string
 }
+
 variable "instance_type" {
-  type = string
+  description = "The type of instance to start (e.g., t2.micro)."
+  type        = string
 }
+
 variable "ssh_key_name" {
-  type = string
+  description = "The name of the SSH key pair to use for the instance."
+  type        = string
 }
+
 variable "subnet_id" {
-  type = string
+  description = "The ID of the subnet to launch the instance in."
+  type        = string
 }
+
 variable "sg_id" {
-  type = string
+  description = "The ID of the security group to associate with the instance."
+  type        = string
 }
+
 variable "tags" {
-  type = map(string)
-}
-variable "root_volume_size" {
-  type = number
-}
-variable "root_volume_type" {
-  type = string
-}
-variable "root_volume_delete_on_termination" {
-  type = bool
-}
-variable "private_ip" {
-  type = string
-}
-variable "network_interface_name" {
-  type = string
-}
-variable "ec2_encrypted" {
-  type = string
-}
-variable "kms_key" {
-  type = string
+  description = "A map of tags to assign to the instance."
+  type        = map(string)
 }

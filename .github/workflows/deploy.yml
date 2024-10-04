@@ -1,7 +1,7 @@
 name: Terraform Deployment and EC2 configuration
 
 on:
-  pull_request:
+  push:
     branches:
       - github-actions
       

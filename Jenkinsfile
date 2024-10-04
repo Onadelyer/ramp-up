@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'us-west-2'
-        TF_VAR_region = "${AWS_REGION}"
+        AWS_REGION = 'us-east-1'
     }
 
     stages {
@@ -17,8 +16,10 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('terraform') {
-                    sh 'terraform apply -auto-approve'
+                withAWS(credentials: 'aws_access', region: "${AWS_REGION}") {
+                    dir('terraform') {
+                        sh 'terraform apply -auto-approve'
+                    }
                 }
             }
         }

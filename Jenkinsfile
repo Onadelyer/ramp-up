@@ -29,7 +29,9 @@ pipeline {
         stage('Get EC2 Instance IP') {
             steps {
                 script {
-                    env.INSTANCE_IP = sh(script: "terraform output -raw ec2_private_ip", returnStdout: true).trim()
+                    dir('terraform') {
+                        env.INSTANCE_IP = sh(script: "terraform output -raw ec2_private_ip", returnStdout: true).trim()
+                    }
                 }
             }
         }

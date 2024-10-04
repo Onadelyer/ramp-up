@@ -24,14 +24,14 @@ module "security_groups" {
       to_port     = 22
       protocol    = "tcp"
       description = "Allow SSH"
-      cidr_blocks = "10.0.0.0/8"
+      cidr_blocks = "0.0.0.0/0"
     },
     {
       from_port   = 80
       to_port     = 80
       protocol    = "tcp"
       description = "Allow HTTP"
-      cidr_blocks = "10.0.0.0/8"
+      cidr_blocks = "0.0.0.0/0"
     },
   ]
 
@@ -41,7 +41,7 @@ module "security_groups" {
       to_port     = 0
       protocol    = "-1"
       description = "Allow all outbound traffic"
-      cidr_blocks = "10.0.0.0/8"
+      cidr_blocks = "0.0.0.0/0"
     },
   ]
 }

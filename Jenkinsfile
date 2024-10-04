@@ -31,7 +31,7 @@ pipeline {
                 script {
                     withAWS(credentials: 'aws_access', region: "${AWS_REGION}") {
                         dir('terraform') {
-                            env.INSTANCE_IP = sh(script: "terraform output -raw ec2_private_ip", returnStdout: true).trim()
+                            env.INSTANCE_IP = sh(script: "terraform output -raw ec2_public_ip", returnStdout: true).trim()
                         }
                     }
                 }

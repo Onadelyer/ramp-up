@@ -29,8 +29,7 @@ pipeline {
         stage('Get EC2 Instance IP') {
             steps {
                 script {
-                    def instanceId = sh(script: "terraform output -raw instance_id", returnStdout: true).trim()
-                    env.INSTANCE_IP = sh(script: "aws ec2 describe-instances --instance-ids ${instanceId} --query 'Reservations[0].Instances[0].PublicIpAddress' --output text", returnStdout: true).trim()
+                    env.INSTANCE_IP = sh(script: "terraform output -raw ec2_private_ip", returnStdout: true).trim()
                 }
             }
         }

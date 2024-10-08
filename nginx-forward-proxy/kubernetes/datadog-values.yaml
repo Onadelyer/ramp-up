@@ -1,4 +1,17 @@
 datadog:
-  apiKeyExistingSecret: "datadog-secret"
+  clusterName: "minikube"
+  site: "datadoghq.eu"
+  clueterAgent:
+    replicas: "2"
+    createPodDisruptionBudget: "true"
+  kubeStateMetricsEnabled: "true"
+  kubeStateMetricsCore:
+    enabled: "true"
+  logs:
+    enabled: "true"
+    containerCollectAll: "true"
+  apiKey: ""
+  processAgent:
+    enabled: "true"
   kubelet:
-    tlsVerify: false
+    tlsVerify: "false"

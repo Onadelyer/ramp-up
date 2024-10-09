@@ -1,17 +1,20 @@
 datadog:
   clusterName: "minikube"
   site: "datadoghq.eu"
-  clueterAgent:
-    replicas: "2"
-    createPodDisruptionBudget: "true"
   kubeStateMetricsEnabled: "true"
   kubeStateMetricsCore:
     enabled: "true"
   logs:
     enabled: "true"
     containerCollectAll: "true"
-  apiKey: ""
+  apiKeyExistingSecret: "datadog-secret"
   processAgent:
     enabled: "true"
   kubelet:
     tlsVerify: "false"
+clusterAgent:
+  replicas: "2"
+  createPodDisruptionBudget: "true"
+  enabled: "true"
+  metricsProvider:
+    enabled: "true"

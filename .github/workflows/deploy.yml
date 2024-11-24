@@ -39,9 +39,12 @@ jobs:
         echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
 
     - name: Create Text File on EC2 Instance
+      uses: appleboy/ssh-action@v1.2.0
       env:
         INSTANCE_IP: ${{ env.INSTANCE_IP }}
-      run: |
-        echo "Setting up SSH access and creating hello.txt on EC2"
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${INSTANCE_IP} "echo 'Hello, World!' > /home/ec2-user/hello.txt"
-      shell: bash
+      with:
+        host: ${{ env.INSTANCE_IP }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: "echo 'Hello, World!' > /home/ec2-user/hello.txt"

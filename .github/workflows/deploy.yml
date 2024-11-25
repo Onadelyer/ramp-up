@@ -35,7 +35,6 @@ jobs:
       id: get_ip
       working-directory: ./terraform
       run: |
-        INSTANCE_IP=$(terraform output -raw ec2_public_ip)
         echo "INSTANCE_IP=54.166.120.51" >> $GITHUB_ENV
 
     - name: Create Text File on EC2 Instance

@@ -82,3 +82,21 @@ module "api_gateway" {
   lambda_alias = module.lambda.lambda_alias_name
   lambda_name  = module.lambda.lambda_function_name
 }
+
+module "dynamodb_table" {
+  source = "./modules/dynamodb"
+
+  table_name = "users"
+  hash_key   = "id"
+
+  additional_attributes = [
+    {
+      name = "Name"
+      type = "S"
+    },
+    {
+      name = "Role"
+      type = "S"
+    }
+  ]
+}

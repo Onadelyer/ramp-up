@@ -1,0 +1,32 @@
+replicaCount: 2
+
+image:
+  repository: matokar63/nginx-proxy-test
+  pullPolicy: Always
+  tag: "latest"
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+  nodePort: 30080
+
+readinessProbe:
+  enabled: true
+  path: /
+  port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+livenessProbe:
+  enabled: true
+  path: /
+  port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 1

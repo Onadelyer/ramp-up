@@ -1,0 +1,57 @@
+name: Terraform Deployment and EC2 configuration
+
+on:
+  push:
+    branches:
+      - github-actions
+      
+jobs:
+  terraform-deployment:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Terraform Init
+      working-directory: ./terraform
+      run: terraform init
+
+    - name: Terraform Apply
+      working-directory: ./terraform
+      run: terraform apply -auto-approve
+
+    - name: Get EC2 Instance IP
+      id: get_ip
+      working-directory: ./terraform
+      run: |
+        INSTANCE_IP=$(terraform output -raw ec2_public_ip)
+        INSTANCE_ID=$(terraform output -raw ec2_id)
+        echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
+        echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+
+
+    - name: Wait for EC2 Instance to initialize
+      run:
+        aws ec2 wait instance-status-ok --instance-ids $INSTANCE_ID
+
+    - name: Create Text File on EC2 Instance
+      uses: appleboy/ssh-action@v1.2.0
+      env:
+        INSTANCE_IP: ${{ env.INSTANCE_IP }}
+      with:
+        host: ${{ env.INSTANCE_IP }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: "echo 'Hello, World!' > /home/ec2-user/hello.txt"
